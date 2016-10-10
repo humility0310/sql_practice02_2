@@ -24,8 +24,8 @@ public class UpdateTest {
 			pstmt = conn.prepareStatement(sql);
 
 			// 4, 값 바인딩
-			Long no = 12L;
-			String title = "토지12";
+			Long no = 10L;
+			String title = "토지10";
 			String state = "대여중";
 
 			pstmt.setString(1, title);
