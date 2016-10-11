@@ -33,8 +33,8 @@ public class HRSearchEmployee2 {
 			 
 			 //4. 값 바인딩\
 			 String name =scan.nextLine();
-			 pstmt.setString(1,name); 
-			 pstmt.setString(2,name);
+			 pstmt.setString(1,"%"+name+"%"); 
+			 pstmt.setString(2,"%"+name+"%");
 			 rs = pstmt.executeQuery();
 			 while(rs.next()){
 				 //column 에 있는 데이터 타입대로 적어주면 됨. 
