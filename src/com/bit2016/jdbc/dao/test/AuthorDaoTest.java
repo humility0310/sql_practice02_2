@@ -9,14 +9,14 @@ public class AuthorDaoTest {
 
 	public static void main(String[] args) {
 		// insert 테스트
-//		insertTest();
+		// insertTest();
 
 		// deleteTest
 		// deleteTest();
 
-		//updateTest
+		// updateTest
 		updateTest();
-		
+
 		// getList test
 		getListTest();
 	}
