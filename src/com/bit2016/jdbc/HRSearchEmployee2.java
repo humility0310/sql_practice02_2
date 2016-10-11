@@ -28,23 +28,20 @@ public class HRSearchEmployee2 {
 			 String sql =
 				"select employee_id, first_name, last_name,hire_date "
 				+ "from employees "
-				+ "where first_name like '%King%' OR last_name like '%?%'";
+				+ "where first_name like ? OR last_name like ?";
 			 pstmt = conn.prepareStatement(sql) ;
 			 
 			 //4. 값 바인딩\
-//			 String name =scan.nextLine();
-			 String name = "King";
-			 pstmt.setString(1,name);
-//			 pstmt.setString(2,"'%"+name+"%'");
+			 String name =scan.nextLine();
+			 pstmt.setString(1,name); 
+			 pstmt.setString(2,name);
 			 rs = pstmt.executeQuery();
-			 System.out.println("3333");
 			 while(rs.next()){
 				 //column 에 있는 데이터 타입대로 적어주면 됨. 
 				 Long employeeId = rs.getLong(1);
 				 String firstName = rs.getString(2);
 				 String lastName = rs.getString(3);
 				 Date date = rs.getDate(4);
-				 System.out.println("44444");
 				 System.out.println(employeeId + ":" + firstName+":"+lastName+":"+date);
 			 }
 			 //5.sql 실행

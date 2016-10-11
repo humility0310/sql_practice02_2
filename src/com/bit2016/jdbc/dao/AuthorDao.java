@@ -13,6 +13,79 @@ import com.bit2016.jdbc.vo.AuthorVo;
 
 public class AuthorDao {
 
+	private Connection getConnection() throws SQLException {
+		Connection conn = null;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+
+			String url = "jdbc:oracle:thin:@localhost:1521:xe";
+
+			conn = DriverManager.getConnection(url, "bitdb", "bitdb");
+
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩 실패 :" + e);
+		}
+		return conn;
+
+	}
+
+	public boolean update(AuthorVo vo) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = 0;
+		try {
+			conn = getConnection();
+
+			String sql = "update author set name = ? where no = ? ";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setString(1, vo.getName());
+			pstmt.setLong(1, vo.getNo());
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("error : " + e);
+			}
+		}
+		return result == 1;
+	}
+
+	public boolean delete(Long no) {
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		int result = 0;
+		try {
+			conn = getConnection();
+
+			String sql = "delete from author where no = ?";
+			pstmt = conn.prepareStatement(sql);
+
+			pstmt.setLong(1, no);
+
+			result = pstmt.executeUpdate();
+
+		} catch (SQLException e) {
+			System.out.println("error:" + e);
+		} finally {
+			try {
+				if (pstmt != null) {
+					pstmt.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("error : " + e);
+			}
+		}
+		return result == 1;
+	}
+
 	public List<AuthorVo> getList() {
 		List<AuthorVo> list = new ArrayList<AuthorVo>();
 
@@ -20,9 +93,7 @@ public class AuthorDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			conn = DriverManager.getConnection(url, "bitdb", "bitdb");
+			conn = getConnection();
 
 			stmt = conn.createStatement();
 
@@ -40,8 +111,6 @@ public class AuthorDao {
 				list.add(vo);
 			}
 
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버 로딩실패 :" + e);
 		} catch (SQLException e) {
 			System.out.println("error :" + e);
 		} finally {
@@ -63,17 +132,13 @@ public class AuthorDao {
 		return list;
 	}
 
-	public void insert(AuthorVo vo) {
+	public boolean insert(AuthorVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
-
+		int result = 0;
 		try {
-			// 1, jdbc 드라이버 로딩(oracle)
-			Class.forName("oracle.jdbc.driver.OracleDriver");
 
-			// 2, Connection 얻어오기
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			conn = DriverManager.getConnection(url, "bitdb", "bitdb");
+			conn = getConnection();
 
 			// 3, statment 준비
 			String sql = "insert into author values(author_seq.nextval, ?)";
@@ -82,11 +147,8 @@ public class AuthorDao {
 			// 4, 바인딩
 			pstmt.setString(1, vo.getName());
 
-			int count = pstmt.executeUpdate();
-			System.out.println(count);
+			result = pstmt.executeUpdate();
 
-		} catch (ClassNotFoundException e) {
-			System.out.println("드라이버로딩 실패 : " + e);
 		} catch (SQLException e) {
 			System.out.println("error: " + e);
 		} finally {
@@ -102,5 +164,6 @@ public class AuthorDao {
 				e.printStackTrace();
 			}
 		}
+		return result == 1;
 	}
 }
