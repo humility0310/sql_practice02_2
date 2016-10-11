@@ -11,12 +11,18 @@ public class AuthorDaoTest {
 	}
 
 	public static void insertTest() {
-		AuthorVo vo = new AuthorVo();
-		vo.setNo(200L);
-		vo.setName("공자");
-
 		AuthorDao dao = new AuthorDao();
-		dao.insert(vo);
+		//mock data
+		AuthorVo vo1 = new AuthorVo();
+		vo1.setName("맹자");
+		AuthorVo vo2 = new AuthorVo();
+		vo2.setName("장자");
+		AuthorVo vo3 = new AuthorVo();
+		vo3.setName("공자");
+
+		dao.insert(vo1);
+		dao.insert(vo2);
+		dao.insert(vo3);
 	}
 
 }

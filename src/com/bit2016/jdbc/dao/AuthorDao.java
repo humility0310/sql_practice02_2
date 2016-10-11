@@ -3,36 +3,88 @@ package com.bit2016.jdbc.dao;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.bit2016.jdbc.vo.AuthorVo;
 
 public class AuthorDao {
+
+	public List<AuthorVo> getList() {
+		List<AuthorVo> list = new ArrayList<AuthorVo>();
+
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			String url = "jdbc:oracle:thin:@localhost:1521:xe";
+			conn = DriverManager.getConnection(url, "bitdb", "bitdb");
+
+			stmt = conn.createStatement();
+
+			String sql = "select no, name from author order by no asc";
+			rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+				Long no = rs.getLong(1);
+				String name = rs.getString(2);
+
+				AuthorVo vo = new AuthorVo();
+				vo.setNo(no);
+				vo.setName(name);
+
+				list.add(vo);
+			}
+
+		} catch (ClassNotFoundException e) {
+			System.out.println("드라이버 로딩실패 :" + e);
+		} catch (SQLException e) {
+			System.out.println("error :" + e);
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stmt != null) {
+					stmt.close();
+				}
+				if (conn != null) {
+					conn.close();
+				}
+			} catch (SQLException e) {
+				System.out.println("error : " + e);
+			}
+		}
+
+		return list;
+	}
+
 	public void insert(AuthorVo vo) {
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 
 		try {
-			System.out.println("1");
 			// 1, jdbc 드라이버 로딩(oracle)
-			Class.forName( "oracle.jdbc.driver.OracleDriver" );
-			System.out.println("1.5");
-			// 2,
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+
+			// 2, Connection 얻어오기
 			String url = "jdbc:oracle:thin:@localhost:1521:xe";
 			conn = DriverManager.getConnection(url, "bitdb", "bitdb");
-			System.out.println("2");
+
 			// 3, statment 준비
-			String sql = "insert into author values(?, ?)";
+			String sql = "insert into author values(author_seq.nextval, ?)";
 			pstmt = conn.prepareStatement(sql);
-			System.out.println("3");
+
 			// 4, 바인딩
-			System.out.println("4");
-			pstmt.setLong(1, vo.getNo());
-			pstmt.setString(2, vo.getName());
+			pstmt.setString(1, vo.getName());
 
 			int count = pstmt.executeUpdate();
 			System.out.println(count);
-			System.out.println("5");
+
 		} catch (ClassNotFoundException e) {
 			System.out.println("드라이버로딩 실패 : " + e);
 		} catch (SQLException e) {
